@@ -1,5 +1,4 @@
 import React from 'react';
-import {createNoise3D} from 'simplex-noise';
 import {GLView} from 'expo-gl';
 import {Renderer, TextureLoader, THREE} from 'expo-three';
 import {Alert, PixelRatio, TouchableWithoutFeedback, View} from 'react-native';
@@ -22,7 +21,6 @@ const glViewStyle = {
   height: '100%',
   width: '100%',
 };
-// const noise3D = createNoise3D();
 const viewStyle = {
   height: '100%',
   width: '100%',
@@ -196,11 +194,21 @@ export default function App() {
       new THREE.BufferAttribute(positions, 3),
     );
 
-    const sphereGeometry = new THREE.IcosahedronGeometry(32, 16);
-    const sphereMaterial = new THREE.MeshPhongMaterial({map: textureSphere});
+    const sphereGeometry = new THREE.SphereGeometry(32, 64, 64);
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+      map: textureSphere,
+    });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    const normal = sphere.geometry.getAttribute('normal');
+    const position = sphere.geometry.getAttribute('position');
+    const sphereNormalClone = JSON.parse(JSON.stringify(normal.array));
+    const spherePositionClone = JSON.parse(JSON.stringify(position.array));
+    sphere.castShadow = true;
     sphere.name = 'sphere';
-    sphere.position.z = 128;
+    sphere.receiveShadow = true;
+    sphere.rotation.x = Math.PI / 2;
+    sphere.rotation.z = Math.PI / 2;
+    sphere.position.z = 112;
     trackedObjects.push(sphere);
 
     const stars = new THREE.Points(starsGeometry, starsMaterial);
@@ -241,13 +249,13 @@ export default function App() {
     render();
 
     function render() {
-      animateGeometry();
+      animateSphere();
       animateStars();
 
       const time = clock.getElapsedTime();
 
       navigationItemsMeshes.forEach((navigationItemMesh, index) => {
-        navigationItemMesh.position.y += Math.cos(time) * 0.02;
+        navigationItemMesh.position.y += Math.cos(time) * 0.08;
       });
 
       renderer.render(scene, camera);
@@ -257,8 +265,39 @@ export default function App() {
       gl.endFrameEXP();
     }
 
-    function animateGeometry() {
-      sphere.rotation.y += 0.004;
+    function animateSphere() {
+      const damping = 1.6;
+      const now = Date.now() / 512;
+      const position = sphere.geometry.getAttribute('position');
+
+      for (let i = 0; i < position.count; i++) {
+        const ix = i * 3;
+        const iy = i * 3 + 1;
+        const iz = i * 3 + 2;
+
+        const uX = sphere.geometry.attributes.uv.getX(i) * Math.PI * 8;
+        const uY = sphere.geometry.attributes.uv.getY(i) * Math.PI * 8;
+
+        const xangle = uX + now;
+        const xsin = Math.sin(xangle) * damping;
+        const yangle = uY + now;
+        const ycos = Math.cos(yangle) * damping;
+
+        sphere.geometry.attributes.position.setX(
+          i,
+          spherePositionClone[ix] + sphereNormalClone[ix] * (xsin + ycos),
+        );
+        sphere.geometry.attributes.position.setY(
+          i,
+          spherePositionClone[iy] + sphereNormalClone[iy] * (xsin + ycos),
+        );
+        sphere.geometry.attributes.position.setZ(
+          i,
+          spherePositionClone[iz] + sphereNormalClone[iz] * (xsin + ycos),
+        );
+      }
+
+      sphere.geometry.attributes.position.needsUpdate = true;
     }
 
     function animateStars() {
