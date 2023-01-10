@@ -14,11 +14,11 @@ PODS:
   - EXGL (12.0.1):
     - ExpoModulesCore
     - React-jsi
-  - Expo (47.0.11):
+  - Expo (47.0.12):
     - ExpoModulesCore
   - ExpoKeepAwake (11.0.1):
     - ExpoModulesCore
-  - ExpoModulesCore (1.1.0):
+  - ExpoModulesCore (1.1.1):
     - React-Core
     - ReactCommon/turbomodule/core
   - FBLazyVector (0.70.6)
@@ -476,9 +476,9 @@ SPEC CHECKSUMS:
   EXFileSystem: bbfe3441f1f7f64942d8df2aa4264b6c7a27807c
   EXFont: 319606bfe48c33b5b5063fb0994afdc496befe80
   EXGL: 5f24aaf2552f784d5d59e960823faf53d120893c
-  Expo: dedd83acfd4d70cbec6ac2f1b4433462d95c70bc
+  Expo: f48d305fda3e4e501d686e6bad7d8c8373828279
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
-  ExpoModulesCore: 089e1ac0f0edee4dd0af0eb4e3f7b44d72cc418d
+  ExpoModulesCore: 485dff3a59b036a33b6050c0a5aea3cf1037fdd1
   FBLazyVector: 48289402952f4f7a4e235de70a9a590aa0b79ef4
   FBReactNativeSpec: dd1186fd05255e3457baa2f4ca65e94c2cd1e3ac
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9

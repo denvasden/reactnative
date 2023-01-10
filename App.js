@@ -31,7 +31,7 @@ const navigationItems = [
     name: 'Bitcoin',
     position: {
       x: 0,
-      y: -6,
+      y: -8,
       z: 368,
     },
     texture: textureIcon1,
@@ -40,7 +40,7 @@ const navigationItems = [
     name: 'Card',
     position: {
       x: -20,
-      y: -4,
+      y: -6,
       z: 304,
     },
     texture: textureIcon2,
@@ -49,7 +49,7 @@ const navigationItems = [
     name: 'Currency',
     position: {
       x: 20,
-      y: -4,
+      y: -6,
       z: 304,
     },
     texture: textureIcon3,
@@ -57,18 +57,18 @@ const navigationItems = [
   {
     name: 'Target',
     position: {
-      x: -28,
-      y: 4,
-      z: 272,
+      x: -30,
+      y: -2,
+      z: 264,
     },
     texture: textureIcon4,
   },
   {
     name: 'Digital innovation',
     position: {
-      x: 28,
-      y: 4,
-      z: 272,
+      x: 30,
+      y: -2,
+      z: 264,
     },
     texture: textureIcon5,
   },
@@ -107,10 +107,10 @@ export default function App() {
       );
 
       if (navigationItem) {
-        Alert.alert(`Interaction will lead to "${name}" screen`);
+        Alert.alert(`Interaction with "${name}" tag`);
       }
     } else {
-      Alert.alert('Not a sphere!');
+      Alert.alert('Interaction with blank area!');
     }
   }
 
@@ -133,12 +133,12 @@ export default function App() {
     );
     camera.position.set(0, 0, 512);
 
-    const ambientLight = new THREE.AmbientLight('#ffffff', 1);
+    const ambientLight = new THREE.AmbientLight('#ffffff', 1.4);
     ambientLight.position.set(0, 32, 32);
 
-    const directionalLight1 = new THREE.DirectionalLight('#ffffff', 1);
+    const directionalLight1 = new THREE.DirectionalLight('#ffffff', 2);
     directionalLight1.position.set(16, 32, 32);
-    const directionalLight2 = new THREE.DirectionalLight('#ffffff', 2);
+    const directionalLight2 = new THREE.DirectionalLight('#ffffff', 4);
     directionalLight2.position.set(-16, -32, -32);
 
     const renderer = new Renderer({gl});
@@ -147,6 +147,8 @@ export default function App() {
 
     const scene = new THREE.Scene();
     scene.background = textureSceneBackground;
+    scene.fog = new THREE.Fog(new THREE.Color(0x000000), 8, 1024);
+
     setSceneBackground({
       backgroundImage: {
         height: 2160,
@@ -255,7 +257,7 @@ export default function App() {
       const time = clock.getElapsedTime();
 
       navigationItemsMeshes.forEach((navigationItemMesh, index) => {
-        navigationItemMesh.position.y += Math.cos(time) * 0.08;
+        navigationItemMesh.position.y += Math.cos(time) * 0.03;
       });
 
       renderer.render(scene, camera);
@@ -297,6 +299,9 @@ export default function App() {
         );
       }
 
+      sphere.rotation.x += 0.004;
+      // sphere.rotation.y += 0.002;
+
       sphere.geometry.attributes.position.needsUpdate = true;
     }
 
@@ -305,7 +310,7 @@ export default function App() {
         vector.x += (0 - vector.x) / vector.velocity;
         vector.y += (0 - vector.y) / vector.velocity;
         vector.z += (0 - vector.z) / vector.velocity;
-        vector.velocity -= 0.2;
+        vector.velocity -= 0.4;
 
         if (
           vector.x <= 4 &&
@@ -331,12 +336,12 @@ export default function App() {
 
       stars.geometry.attributes.position.needsUpdate = true;
 
-      stars.rotation.z += 0.004;
+      // stars.rotation.z += 0.004;
     }
   }
 }
 
-function getStarVector(radius = 128) {
+function getStarVector(radius = 256) {
   let theta = 2 * Math.PI * Math.random();
   let phi = Math.acos(2 * Math.random() - 1);
   let dx = radius * Math.sin(phi) * Math.cos(theta);
